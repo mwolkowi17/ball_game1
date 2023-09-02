@@ -1,32 +1,9 @@
-import { useRef, useState } from 'react'
+import { Suspense, useRef } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
 import { CuboidCollider, Physics, RigidBody } from "@react-three/rapier"
 import * as THREE from "three"
 
-function Box(props) {
-  // This reference gives us direct access to the THREE.Mesh object
-  const ref = useRef()
-  // Hold state for hovered and clicked events
-  const [hovered, hover] = useState(false)
-  const [clicked, click] = useState(false)
-  // Subscribe this component to the render-loop, rotate the mesh every frame
-  useFrame((state, delta) => (ref.current.rotation.x += delta))
-  // Return the view, these are regular Threejs elements expressed in JSX
-  return (
-    <mesh
-      {...props}
-      ref={ref}
-      scale={clicked ? 1.5 : 1}
-      onClick={(event) => click(!clicked)}
-      onPointerOver={(event) => (event.stopPropagation(), hover(true))}
-      onPointerOut={(event) => hover(false)}>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
-    </mesh>
-  )
-}
-
+//next make colision events
 export default function App() {
   return (
     <Canvas>
@@ -34,48 +11,17 @@ export default function App() {
       <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
       <directionalLight />
       <pointLight position={[-10, -10, -10]} />
-      {/* <Box position={[-1.2, 0, 0]} />
-      <Box position={[1.2, 0, 0]} /> */}
-      {/* <OrbitControls /> */}
-      <Physics gravity={[0, -30, 0]}>
-        <Ball />
-        <Paddle />
-        <Enemy color="orange" position={[2.75, 1.5, 0]} />
-        <Enemy color="hotpink" position={[-2.75, 3.5, 0]} />
-      </Physics>
+      <Suspense>
+        <Physics gravity={[0, -30, 0]}>
+          <Ball />
+          <Paddle />
+          <Enemy color="orange" position={[2.75, 1.5, 0]} />
+          <Enemy color="hotpink" position={[-2.75, 3.5, 0]} />
+        </Physics>
+      </Suspense>
     </Canvas>
   )
 }
-
-
-
-
-
-
-
-
-//= ======================================================================
-// import * as THREE from "three"
-// import { Canvas, useFrame, useThree } from "@react-three/fiber"
-// import { CuboidCollider, Physics, RigidBody } from "@react-three/rapier"
-// import { useRef } from "react"
-
-// export default function App() {
-//   <Canvas camera={{ position: [0, 5, 12], fov: 50 }}>
-//     <ambientLight intensity={0.5} />
-//     <pointLight position={[10, 10, 5]} />
-//     <mesh position={[0,0,0]}>
-//       <boxGeometry args={[1, 1, 1]} />
-//       <meshStandardMaterial color={'orange'} />
-//     </mesh>
-//     {/* <Physics gravity={[0, -30, 0]}>
-//       <Ball />
-//       <Paddle />
-//       <Enemy color="orange" position={[2.75, 1.5, 0]} />
-//       <Enemy color="hotpink" position={[-2.75, 3.5, 0]} />
-//     </Physics> */}
-//   </Canvas>
-// }
 
 function Ball() {
   const ref = useRef()
